@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Web App - Powered by Antigravity</title>
+  <meta name="description" content="A state-of-the-art modern single-file HTML web application built and deployed with Antigravity.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 15% 15%, #13111c 0%, #09080e 100%);
+      --card-bg: rgba(26, 23, 38, 0.65);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #7952f5;
+      --primary-hover: #906ffa;
+      --primary-glow: rgba(121, 82, 245, 0.35);
+      --accent: #00f0ff;
+      --accent-glow: rgba(0, 240, 255, 0.3);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --surface: rgba(255, 255, 255, 0.03);
+      --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+      --radius: 18px;
+      --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="light"] {
+      --bg-gradient: radial-gradient(circle at 15% 15%, #f4f6fb 0%, #e9edf5 100%);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(0, 0, 0, 0.06);
+      --primary: #6338f0;
+      --primary-hover: #7b55f8;
+      --primary-glow: rgba(99, 56, 240, 0.2);
+      --accent: #0099cc;
+      --accent-glow: rgba(0, 153, 204, 0.2);
+      --text-main: #111827;
+      --text-muted: #4b5563;
+      --surface: rgba(0, 0, 0, 0.02);
+      --shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+      transition: background 0.5s ease;
+    }
+
+    /* Ambient background blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 0;
+      opacity: 0.45;
+      pointer-events: none;
+      animation: floatBlobs 14s infinite alternate ease-in-out;
+    }
+    .blob-1 {
+      width: 450px;
+      height: 450px;
+      background: var(--primary);
+      top: -100px;
+      left: -100px;
+    }
+    .blob-2 {
+      width: 400px;
+      height: 400px;
+      background: var(--accent);
+      bottom: -120px;
+      right: -120px;
+      animation-delay: -7s;
+    }
+
+    @keyframes floatBlobs {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(60px, 40px) scale(1.12); }
+    }
+
+    /* Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .theme-toggle {
+      background: var(--surface);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.5rem 0.9rem;
+      border-radius: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .theme-toggle:hover {
+      background: var(--primary-glow);
+      border-color: var(--primary);
+    }
+
+    /* Hero & Main Content */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 3rem;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--card-border);
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 650px;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Interactive Showcase Card */
+    .app-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 750px;
+      margin-bottom: 3rem;
+      transition: var(--transition);
+      text-align: left;
+    }
+    .app-card:hover {
+      border-color: rgba(121, 82, 245, 0.4);
+      transform: translateY(-4px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1rem;
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    /* Counter / Interactive demo */
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.8rem 1.6rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #8c6cfb);
+      color: white;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 6px 20px var(--primary-glow);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+    }
+    .btn-outline:hover {
+      background: var(--surface);
+      border-color: var(--primary);
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      text-align: left;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: var(--transition);
+    }
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      z-index: 10;
+    }
+
+    @media (max-width: 640px) {
+      .app-card {
+        padding: 1.5rem;
+      }
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <span>Antigravity App</span>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span id="themeIcon">☀️</span>
+        <span id="themeText">Light</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="badge">🚀 Deployed via GitHub Pages Skill</div>
+    <h1>Build Fast. <span class="gradient-text">Deploy Instantly.</span></h1>
+    <p class="subtitle">
+      A sleek, responsive web application generated with Antigravity and published live to GitHub Pages with zero build tooling required.
+    </p>
+
+    <!-- Interactive Component Box -->
+    <div class="app-card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Live App State</h2>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Real-time reactive client-side demo</span>
+        </div>
+        <span style="font-size: 0.8rem; background: rgba(34, 197, 94, 0.15); color: #22c55e; padding: 0.25rem 0.6rem; border-radius: 20px; font-weight: 600;">Status: Active</span>
+      </div>
+
+      <div class="demo-grid">
+        <div class="stat-box">
+          <div class="stat-val" id="clickCounter">0</div>
+          <div class="stat-label">Total Clicks</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="timeCounter">0s</div>
+          <div class="stat-label">Session Duration</div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btnAction">✨ Increment Counter</button>
+        <button class="btn btn-outline" id="btnReset">Reset State</button>
+      </div>
+    </div>
+
+    <!-- Feature Showcase -->
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">💎</div>
+        <div class="feature-title">Glassmorphic Design</div>
+        <div class="feature-desc">Engineered with modern backdrop filters, tailored gradients, and sleek typography tokens.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Pure Zero-Config</div>
+        <div class="feature-desc">Self-contained HTML, CSS, and JavaScript. No npm bundles or webpack configurations required.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <div class="feature-title">Global Edge Deployment</div>
+        <div class="feature-desc">Delivered globally with low-latency CDN performance through GitHub Pages infrastructure.</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 Antigravity Web App. Crafted with elegance & high performance.</p>
+  </footer>
+
+  <script>
+    // Theme toggle handling
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    const root = document.documentElement;
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = root.getAttribute('data-theme');
+      if (currentTheme === 'light') {
+        root.removeAttribute('data-theme');
+        themeIcon.textContent = '☀️';
+        themeText.textContent = 'Light';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+        themeIcon.textContent = '🌙';
+        themeText.textContent = 'Dark';
+        localStorage.setItem('theme', 'light');
+      }
+    });
+
+    // Check system or saved preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+      root.setAttribute('data-theme', 'light');
+      themeIcon.textContent = '🌙';
+      themeText.textContent = 'Dark';
+    }
+
+    // Interactive Demo Counter
+    let count = 0;
+    const clickCounter = document.getElementById('clickCounter');
+    const btnAction = document.getElementById('btnAction');
+    const btnReset = document.getElementById('btnReset');
+
+    btnAction.addEventListener('click', () => {
+      count++;
+      clickCounter.textContent = count;
+      btnAction.style.transform = 'scale(0.96)';
+      setTimeout(() => { btnAction.style.transform = ''; }, 120);
+    });
+
+    btnReset.addEventListener('click', () => {
+      count = 0;
+      clickCounter.textContent = count;
+    });
+
+    // Session duration timer
+    let seconds = 0;
+    const timeCounter = document.getElementById('timeCounter');
+    setInterval(() => {
+      seconds++;
+      timeCounter.textContent = `${seconds}s`;
+    }, 1000);
+  </script>
+</body>
+</html>
